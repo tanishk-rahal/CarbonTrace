@@ -1,0 +1,25 @@
+.chart-container {
+  width: 100%;
+  padding: 10px 0;
+}
+
+/* Recharts specific styling */
+.recharts-cartesian-axis-tick-value {
+  font-size: 12px;
+  fill: #666;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.recharts-legend-wrapper {
+  padding-top: 20px;
+}
+
+.recharts-legend-item-text {
+  color: #333;
+  font-size: 14px;
+}
+
+

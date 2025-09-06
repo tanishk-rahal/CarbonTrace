@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonTrace Admin Dashboard - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .main-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #2E7D32 0%, #1B5E20 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: #4CAF50;
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: #4CAF50;
+        }
+
+        .nav-item-icon {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 8px 40px 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            width: 300px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: #2E7D32;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-icon:hover {
+            background-color: #f0f0f0;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .profile-dropdown:hover {
+            background-color: #f0f0f0;
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .profile-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .content-area {
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 8px 0;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #2E7D32;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.blue {
+            border-left-color: #1565C0;
+        }
+
+        .stat-card.green {
+            border-left-color: #4CAF50;
+        }
+
+        .stat-card.orange {
+            border-left-color: #FF9800;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-right: 15px;
+            opacity: 0.8;
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin: 4px 0;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin: 0 0 4px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 11px;
+            font-weight: 500;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .stat-change.positive {
+            color: #4CAF50;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-section,
+        .map-section {
+            min-height: 400px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 16px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .map-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2E7D32;
+            font-size: 16px;
+            border: 2px dashed #4CAF50;
+        }
+
+        .recent-activity {
+            margin-top: 20px;
+        }
+
+        .activity-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            margin: 0 0 4px 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .activity-time {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #2E7D32;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1B5E20;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #2E7D32;
+            color: #2E7D32;
+        }
+
+        .btn-outline:hover {
+            background-color: #2E7D32;
+            color: white;
+        }
+
+        .demo-notice {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .demo-notice h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .demo-notice p {
+            color: #1976d2;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .header {
+                padding: 0 20px;
+            }
+            
+            .search-input {
+                width: 200px;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title">CarbonTrace</h1>
+                <p class="sidebar-subtitle">MRV System Admin</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <span class="nav-item-icon">📊</span>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-item-icon">📋</span>
+                    Submissions
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-item-icon">👥</span>
+                    Users
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-item-icon">📈</span>
+                    Reports
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-item-icon">⚙️</span>
+                    Settings
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1 class="header-title">CarbonTrace Admin</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <input
+                            type="text"
+                            class="search-input"
+                            placeholder="Search submissions, users..."
+                        />
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="notification-icon">
+                        🔔
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="profile-dropdown">
+                        <div class="profile-avatar">A</div>
+                        <span class="profile-name">Admin User</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Demo Notice -->
+                <div class="demo-notice">
+                    <h3>🌱 CarbonTrace Admin Dashboard - Demo</h3>
+                    <p>This is a static demo of the CarbonTrace MRV System Admin Dashboard. The full React.js application is ready to run with npm start.</p>
+                </div>
+
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Overview of CarbonTrace MRV System</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">🌱</div>
+                            <div class="stat-info">
+                                <p class="stat-label">Total Plantations</p>
+                                <h3 class="stat-value">2,847</h3>
+                                <span class="stat-change positive">+12% from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-header">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-info">
+                                <p class="stat-label">Verified Submissions</p>
+                                <h3 class="stat-value">1,923</h3>
+                                <span class="stat-change positive">+8% from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-header">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <p class="stat-label">Credits Issued</p>
+                                <h3 class="stat-value">45,670</h3>
+                                <span class="stat-change positive">+15% from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-header">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-info">
+                                <p class="stat-label">Active Users</p>
+                                <h3 class="stat-value">156</h3>
+                                <span class="stat-change positive">+5% from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Map Row -->
+                <div class="dashboard-content">
+                    <div class="chart-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Submissions Trend</h3>
+                            </div>
+                            <div class="chart-placeholder">
+                                📈 Interactive Chart (Recharts)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="map-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Plantation Locations</h3>
+                            </div>
+                            <div class="map-placeholder">
+                                🗺️ Interactive Map (Leaflet.js)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">🌱</div>
+                                <div class="activity-content">
+                                    <p class="activity-text">New mangrove plantation submitted by user_123</p>
+                                    <span class="activity-time">2 minutes ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">✅</div>
+                                <div class="activity-content">
+                                    <p class="activity-text">Plantation verification completed for submission #2847</p>
+                                    <span class="activity-time">15 minutes ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">💰</div>
+                                <div class="activity-content">
+                                    <p class="activity-text">150 carbon credits issued to user_456</p>
+                                    <span class="activity-time">1 hour ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">👥</div>
+                                <div class="activity-content">
+                                    <p class="activity-text">New user registration: environmental_ngo_789</p>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">📊</div>
+                                <div class="activity-content">
+                                    <p class="activity-text">Monthly report generated for January 2024</p>
+                                    <span class="activity-time">3 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="alert('Full React.js app ready! Run: npm start')">
+                        🚀 Launch Full Application
+                    </button>
+                    <button class="btn btn-outline" onclick="alert('View source code in src/ directory')">
+                        📁 View Source Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple demo interactions
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                const pageName = this.textContent.trim();
+                document.querySelector('.page-title').textContent = pageName;
+                document.querySelector('.page-subtitle').textContent = `Manage ${pageName.toLowerCase()} in CarbonTrace MRV System`;
+            });
+        });
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', function() {
+            if (this.value.length > 0) {
+                console.log('Searching for:', this.value);
+            }
+        });
+
+        // Notification click
+        document.querySelector('.notification-icon').addEventListener('click', function() {
+            alert('3 new notifications:\n• New submission pending review\n• User verification completed\n• System maintenance scheduled');
+        });
+    </script>
+</body>
+</html>
+
+
