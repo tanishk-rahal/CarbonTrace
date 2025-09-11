@@ -513,3 +513,6 @@ curl http://your-server.com/api/health
 Your Kotlin Android app is now ready to integrate with the CarbonTrace backend! 🚀
 
 
+
+
+
