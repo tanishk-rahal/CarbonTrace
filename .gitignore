@@ -3,3 +3,10 @@ node_modules
 *.log
 dist/
 build/
+backend/.env
+.env
+.vscode/
+.idea/
+coverage/
+.DS_Store
+Thumbs.db
