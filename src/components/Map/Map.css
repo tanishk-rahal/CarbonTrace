@@ -1,0 +1,50 @@
+.map-container {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.map-popup {
+  min-width: 200px;
+}
+
+.map-popup h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.map-popup p {
+  margin: 4px 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.status-verified {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #f44336;
+  font-weight: 600;
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+  margin: 12px;
+  line-height: 1.4;
+}
+
+
