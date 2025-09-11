@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,10 +12,18 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/settings', label: 'Settings', icon: '⚙️' }
   ];
 
+  const [isDesktop, setIsDesktop] = useState(() => (typeof window !== 'undefined' ? window.innerWidth >= 768 : false));
+
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth >= 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   return (
     <>
       <AnimatePresence>
-        {isOpen && (
+        {!isDesktop && isOpen && (
           <motion.div 
             className="sidebar-overlay" 
             onClick={onClose}
@@ -26,9 +34,9 @@ const Sidebar = ({ isOpen, onClose }) => {
         )}
       </AnimatePresence>
       <motion.div 
-        className={`sidebar ${isOpen ? 'open' : ''} bg-white shadow-soft`}
+        className={`sidebar ${isOpen ? 'open' : ''} bg-white shadow-soft fixed left-0 top-0 h-screen w-64 z-[1000] md:translate-x-0 md:static`}
         initial={{ x: -260 }}
-        animate={{ x: isOpen ? 0 : -260 }}
+        animate={{ x: isDesktop ? 0 : (isOpen ? 0 : -260) }}
         transition={{ type: 'spring', stiffness: 260, damping: 24 }}
       >
         <div className="sidebar-header">
