@@ -79,15 +79,15 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="dashboard">
-      <div className="page-header">
-        <h1 className="page-title">Dashboard</h1>
-        <p className="page-subtitle">Overview of CarbonTrace MRV System</p>
-        {error && <div className="error-message">{error}</div>}
+    <div className="dashboard px-4 md:px-6">
+      <div className="page-header mb-6">
+        <h1 className="page-title text-3xl font-semibold text-eco mb-1">Dashboard</h1>
+        <p className="page-subtitle text-slate-600">Overview of CarbonTrace MRV System</p>
+        {error && <div className="alert alert-warning mt-3">{error}</div>}
       </div>
 
       {/* Stats Cards */}
-      <div className="stats-grid">
+      <div className="stats-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" data-aos="fade-up" data-aos-delay="50">
         <StatsCard
           title="Total Plantations"
           value={stats.totalPlantations}
@@ -122,9 +122,9 @@ const Dashboard = () => {
       </div>
 
       {/* Charts and Map Row */}
-      <div className="dashboard-content">
-        <div className="chart-section">
-          <div className="card">
+      <div className="dashboard-content grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="chart-section" data-aos="fade-up" data-aos-delay="100">
+          <div className="card bg-white rounded-xl shadow-soft">
             <div className="card-header">
               <h3 className="card-title">Submissions Trend</h3>
             </div>
@@ -132,8 +132,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="map-section">
-          <div className="card">
+        <div className="map-section" data-aos="fade-up" data-aos-delay="150">
+          <div className="card bg-white rounded-xl shadow-soft">
             <div className="card-header">
               <h3 className="card-title">Plantation Locations</h3>
             </div>
@@ -143,8 +143,8 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="recent-activity">
-        <div className="card">
+      <div className="recent-activity" data-aos="fade-up" data-aos-delay="200">
+        <div className="card bg-white rounded-xl shadow-soft">
           <div className="card-header">
             <h3 className="card-title">Recent Activity</h3>
           </div>
